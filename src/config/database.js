@@ -1,18 +1,22 @@
-import  Sequelize  from "sequelize";
+import Sequelize from "sequelize";
 
-export const sequelize = new Sequelize("dtasks_users_db", "root", "", {
-    host: "localhost",
-    dialect: "mysql"
-})
+export const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: "mysql",
+  },
+);
 
-
-export const startDB = async () =>{
-try {
-        await sequelize.authenticate()
-        await sequelize.sync({force: true})
+export const startDB = async () => {
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync({ force: true });
     console.log("Base de datos conectada correctamente crack");
-} catch (error) {
+  } catch (error) {
     console.error(error);
     console.log("Error al conectar la BD", error);
-}
-}
+  }
+};

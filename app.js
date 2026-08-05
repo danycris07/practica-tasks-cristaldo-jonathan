@@ -1,3 +1,4 @@
+import "dotenv/config"
 import express, { Router } from "express"
 
 import { startDB } from "./src/config/database.js";
@@ -5,7 +6,7 @@ import { startDB } from "./src/config/database.js";
 import { TaskRouter } from "./src/routes/task.routes.js";
 import { UserRouter } from "./src/routes/user.routes.js";
 
-const PORT = 3000
+const PORT = process.env.PORT
 const app = express()
 app.use(express.json())
 
