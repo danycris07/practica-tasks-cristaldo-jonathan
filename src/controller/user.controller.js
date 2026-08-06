@@ -25,21 +25,32 @@ export const obtenerUsuarioPorId = async (req, res) => {
 export const crearUsuario = async (req, res) => {
   try {
     const { id, name, email, password } = req.body;
-    if (typeof name !== "string" || name.trim() === "" || name.length > 100) {
+    if (typeof name !== "string") {
+      return res
+        .status(400)
+        .json({ message: "El nombre debe de ser de tipo caracter (string)" });
+    }
+    if (name.trim() === "") {
+      return res.status(400).json({ message: "El nombre no debe estar vacio" });
+    }
+
+    if (name.length > 100) {
       return res.status(400).json({
-        message:
-          "El nombre debe ser tipo caracteres, no vacia y menor a 100 caracteres",
+        message: "El nombre debe ser  menor a 100 caracteres",
       });
     }
 
-    if (
-      typeof email !== "string" ||
-      email.trim() === "" ||
-      email.length > 100
-    ) {
+    if (typeof email !== "string") {
+      return res
+        .status(400)
+        .json({ message: "El email debe de ser de tipo caracter(string)" });
+    }
+    if (email.trim() === "") {
+      return res.status(400).json({ message: "El email no debe estar vacio" });
+    }
+    if (email.length > 100) {
       return res.status(400).json({
-        message:
-          "El email debe ser tipo caracteres, no vacia y menor a 100 caracteres",
+        message: "El email debe ser menor a 100 caracteres",
       });
     }
 
@@ -49,14 +60,19 @@ export const crearUsuario = async (req, res) => {
       return res.status(400).json({ message: "El email ya existe" });
     }
 
-    if (
-      typeof password !== "string" ||
-      password.trim() === "" ||
-      password.length > 100
-    ) {
+    if (typeof password !== "string") {
+      return res
+        .status(400)
+        .json({ message: "La contraseña debe ser de tipo caracter (string)" });
+    }
+    if (password.trim() === "") {
+      return res
+        .status(400)
+        .json({ message: "La contraseña no debe estar vacia" });
+    }
+    if (password.length > 100) {
       return res.status(400).json({
-        message:
-          "La contraseña no debe estar vacia y no ser mayor de 100 caracteres",
+        message: "La contraseña no debe ser mayor de 100 caracteres",
       });
     }
 
@@ -77,6 +93,69 @@ export const actualizarUsuario = async (req, res) => {
     if (!usuarioBuscado) {
       return res.status(404).json({ message: "No existe ese usuario" });
     }
+    if (name !== undefined) {
+      if (typeof name !== "string") {
+        return res
+          .status(400)
+          .json({ message: "El nombre debe de ser de tipo caracter (string)" });
+      }
+      if (name.trim() === "") {
+        return res
+          .status(400)
+          .json({ message: "El nombre no debe estar vacio" });
+      }
+
+      if (name.length > 100) {
+        return res.status(400).json({
+          message: "El nombre debe ser  menor a 100 caracteres",
+        });
+      }
+    }
+
+    if (email !== undefined) {
+    if (typeof email !== "string") {
+      return res
+        .status(400)
+        .json({ message: "El email debe de ser de tipo caracter(string)" });
+    }
+    if (email.trim() === "") {
+      return res.status(400).json({ message: "El email no debe estar vacio" });
+    }
+    if (email.length > 100) {
+      return res.status(400).json({
+        message: "El email debe ser menor a 100 caracteres",
+      });
+    }
+
+    if (email !== usuarioBuscado.email) {
+        const usuarioExistente = await UserModel.findOne({ where: { email } });
+        if (usuarioExistente) {
+          return res.status(400).json({ message: "El email ya existe" });
+        }
+      }
+    }
+
+   
+
+if (password !== undefined) {
+    if (typeof password !== "string") {
+      return res
+        .status(400)
+        .json({ message: "La contraseña debe ser de tipo caracter (string)" });
+    }
+    if (password.trim() === "") {
+      return res
+        .status(400)
+        .json({ message: "La contraseña no debe estar vacia" });
+    }
+    
+    if (password.length > 100) {
+      return res.status(400).json({
+        message: "La contraseña no debe ser mayor de 100 caracteres",
+      });
+    }
+  }
+
     await usuarioBuscado.update({ name, email, password });
     return res
       .status(200)
