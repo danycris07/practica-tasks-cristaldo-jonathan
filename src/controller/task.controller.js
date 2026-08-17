@@ -2,7 +2,12 @@ import { TaskModel } from "../models/task.model.js";
 
 export const obtenerTodasLasTareas = async (req, res) => {
   try {
-    const tareasObtenidas = await TaskModel.findAll();
+    const tareasObtenidas = await TaskModel.findAll({
+      include: [{
+        model: UserModel,
+        attributes: ['id', 'name', 'email'] 
+      }]
+    });
     return res.status(200).json(tareasObtenidas);
   } catch (error) {
     res.status(500).json({ message: "Error en el servidor" });
@@ -12,7 +17,12 @@ export const obtenerTodasLasTareas = async (req, res) => {
 export const obtenerTareaPorId = async (req, res) => {
   try {
     const { id } = req.params;
-    const tareaEncontrada = await TaskModel.findByPk(id);
+    const tareaEncontrada = await TaskModel.findByPk(id, {
+      include: [{
+        model: UserModel,
+        attributes: ['id', 'name', 'email'] 
+      }]
+    });
     if (!tareaEncontrada) {
       return res.status(404).json({ message: "La tarea no existe" });
     }
@@ -24,7 +34,16 @@ export const obtenerTareaPorId = async (req, res) => {
 
 export const crearTarea = async (req, res) => {
   try {
-    const { title, description, isComplete } = req.body;
+    const { title, description, isComplete, userId} = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ message: "Debe asignar un userId a la tarea" });
+    }
+    
+    const usuarioExistente = await UserModel.findByPk(userId);
+    if (!usuarioExistente) {
+      return res.status(404).json({ message: "El usuario asignado no existe" });
+    }
 
     if (typeof title !== "string") {
       return res
@@ -68,7 +87,7 @@ export const crearTarea = async (req, res) => {
       });
     }
 
-    await TaskModel.create({ title, description, isComplete });
+    await TaskModel.create({ title, description, isComplete, userId});
     return res.status(201).json({ message: "Tarea creada con exito" });
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });
