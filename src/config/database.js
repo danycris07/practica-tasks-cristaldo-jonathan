@@ -13,7 +13,7 @@ export const sequelize = new Sequelize(
 export const startDB = async () => {
   try {
     await sequelize.authenticate();
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     console.log("Base de datos conectada correctamente crack");
   } catch (error) {
     console.error(error);

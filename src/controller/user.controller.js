@@ -1,8 +1,17 @@
 import { UserModel } from "../models/user.model.js";
+import { TaskModel } from "../models/task.model.js";
 
 export const obtenerTodosLosUsuarios = async (req, res) => {
   try {
-    const usuariosObtenidos = await UserModel.findAll();
+    const usuariosObtenidos = await UserModel.findAll({
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: TaskModel,
+          attributes: ["id", "title", "isComplete"],
+        },
+      ],
+    });
     return res.status(200).json(usuariosObtenidos);
   } catch (error) {
     res.status(500).json({ message: "Error en el servidor" });
@@ -12,7 +21,15 @@ export const obtenerTodosLosUsuarios = async (req, res) => {
 export const obtenerUsuarioPorId = async (req, res) => {
   try {
     const { id } = req.params;
-    const usuarioEncontrado = await UserModel.findByPk(id);
+    const usuarioEncontrado = await UserModel.findByPk(id, {
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: TaskModel,
+          attributes: ["id", "title", "isComplete"],
+        },
+      ],
+    });
     if (!usuarioEncontrado) {
       return res.status(404).json({ message: "El usuario no existe" });
     }
@@ -113,21 +130,23 @@ export const actualizarUsuario = async (req, res) => {
     }
 
     if (email !== undefined) {
-    if (typeof email !== "string") {
-      return res
-        .status(400)
-        .json({ message: "El email debe de ser de tipo caracter(string)" });
-    }
-    if (email.trim() === "") {
-      return res.status(400).json({ message: "El email no debe estar vacio" });
-    }
-    if (email.length > 100) {
-      return res.status(400).json({
-        message: "El email debe ser menor a 100 caracteres",
-      });
-    }
+      if (typeof email !== "string") {
+        return res
+          .status(400)
+          .json({ message: "El email debe de ser de tipo caracter(string)" });
+      }
+      if (email.trim() === "") {
+        return res
+          .status(400)
+          .json({ message: "El email no debe estar vacio" });
+      }
+      if (email.length > 100) {
+        return res.status(400).json({
+          message: "El email debe ser menor a 100 caracteres",
+        });
+      }
 
-    if (email !== usuarioBuscado.email) {
+      if (email !== usuarioBuscado.email) {
         const usuarioExistente = await UserModel.findOne({ where: { email } });
         if (usuarioExistente) {
           return res.status(400).json({ message: "El email ya existe" });
@@ -135,26 +154,24 @@ export const actualizarUsuario = async (req, res) => {
       }
     }
 
-   
+    if (password !== undefined) {
+      if (typeof password !== "string") {
+        return res.status(400).json({
+          message: "La contraseña debe ser de tipo caracter (string)",
+        });
+      }
+      if (password.trim() === "") {
+        return res
+          .status(400)
+          .json({ message: "La contraseña no debe estar vacia" });
+      }
 
-if (password !== undefined) {
-    if (typeof password !== "string") {
-      return res
-        .status(400)
-        .json({ message: "La contraseña debe ser de tipo caracter (string)" });
+      if (password.length > 100) {
+        return res.status(400).json({
+          message: "La contraseña no debe ser mayor de 100 caracteres",
+        });
+      }
     }
-    if (password.trim() === "") {
-      return res
-        .status(400)
-        .json({ message: "La contraseña no debe estar vacia" });
-    }
-    
-    if (password.length > 100) {
-      return res.status(400).json({
-        message: "La contraseña no debe ser mayor de 100 caracteres",
-      });
-    }
-  }
 
     await usuarioBuscado.update({ name, email, password });
     return res
