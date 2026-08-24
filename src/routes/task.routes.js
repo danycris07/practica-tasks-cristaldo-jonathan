@@ -6,14 +6,22 @@ import {
   actualizarTarea,
   crearTarea,
   eliminarTarea,
-  asignarTagATarea
+  asignarTagATarea,
 } from "../controller/task.controller.js";
+
+import {
+  createTaskValidation,
+  updateTaskValidation,
+  deleteTaskValidation,
+  asignTagTask,
+} from "../../middlewares/validations/task.validations.js";
+import { validate } from "../../middlewares/validate.js";
 
 export const TaskRouter = Router();
 
 TaskRouter.get("/", obtenerTodasLasTareas);
+TaskRouter.post("/assign-tag", asignTagTask, validate, asignarTagATarea);
+TaskRouter.post("/", createTaskValidation, validate, crearTarea);
 TaskRouter.get("/:id", obtenerTareaPorId);
-TaskRouter.post("/assign-tag", asignarTagATarea);
-TaskRouter.post("/", crearTarea);
-TaskRouter.put("/:id", actualizarTarea);
-TaskRouter.delete("/:id", eliminarTarea);
+TaskRouter.put("/:id", updateTaskValidation, validate, actualizarTarea);
+TaskRouter.delete("/:id", deleteTaskValidation, validate, eliminarTarea);

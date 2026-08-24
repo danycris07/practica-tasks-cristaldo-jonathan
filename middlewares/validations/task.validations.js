@@ -1,6 +1,7 @@
 import { body, param } from "express-validator";
 import { UserModel } from "../../src/models/user.model.js";
 import { TaskModel } from "../../src/models/task.model.js";
+import { TagModel } from "../../src/models/tag.model.js";
 
 export const createTaskValidation = [
   body("userId")
@@ -78,6 +79,7 @@ export const updateTaskValidation = [
     .withMessage("El titulo no debe estar vacio")
     .isLength({ max: 100 })
     .withMessage("El titulo no debe tener mas de 100 caracteres")
+    .bail()
     .custom(async (title, { req }) => {
       const tituloBuscado = await TaskModel.findOne({ where: { title } });
       if (tituloBuscado && tituloBuscado.id !== Number(req.params.id)) {
@@ -98,7 +100,59 @@ export const updateTaskValidation = [
 
   body("isComplete")
     .optional()
-    .withMessage("Completada es obligatoria")
     .isBoolean()
     .withMessage("Completada debe de ser tipo booleano (TRUE o FALSE)"),
+];
+
+export const asignTagTask = [
+  body("taskId")
+    .notEmpty()
+    .withMessage("El taskId no debe de estar vacio")
+    .bail()
+    .isInt()
+    .withMessage("El taskId debe de ser tipo integer")
+    .bail()
+    .custom(async (taskId) => {
+      const tareaBuscada = await TaskModel.findByPk(taskId);
+
+      if (!tareaBuscada) {
+        throw new Error("La tarea buscada no existe");
+      }
+      return true;
+    }),
+
+  body("tagId")
+    .notEmpty()
+    .withMessage("El tagId no debe estar vacio")
+    .bail()
+    .isInt()
+    .withMessage("El tagId debe de ser tipo integer")
+    .bail()
+    .custom(async (tagId) => {
+      const tagBuscada = await TagModel.findByPk(tagId);
+
+      if (!tagBuscada) {
+        throw new Error("La etiqueta buscada no es valida");
+      }
+      return true;
+    }),
+];
+
+export const deleteTaskValidation = [
+  param("id")
+    .notEmpty()
+    .withMessage("Debe ingresar el id de la tarea")
+    .bail()
+    .isInt()
+    .withMessage("El id debe ser de tipo entero")
+    .bail()
+    .custom(async (id) => {
+      const tarea = await TaskModel.findByPk(id);
+
+      if (!tarea) {
+        throw new Error("No existe esa tarea");
+      }
+
+      return true;
+    }),
 ];
