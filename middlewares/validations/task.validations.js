@@ -1,13 +1,14 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { UserModel } from "../../src/models/user.model.js";
 import { TaskModel } from "../../src/models/task.model.js";
 
 export const createTaskValidation = [
   body("userId")
-    .isInt()
-    .withMessage("Debe ser de tipo entero")
     .notEmpty()
     .withMessage("Se debe asignar un userId a la tarea")
+    .bail()
+    .isInt()
+    .withMessage("Debe ser de tipo entero")
     .bail()
     .custom(async (userId) => {
       const usuarioExistente = await UserModel.findByPk(userId);
@@ -46,6 +47,57 @@ export const createTaskValidation = [
 
   body("isComplete")
     .exists()
+    .withMessage("Completada es obligatoria")
+    .isBoolean()
+    .withMessage("Completada debe de ser tipo booleano (TRUE o FALSE)"),
+];
+
+export const updateTaskValidation = [
+  param("id")
+    .notEmpty()
+    .withMessage("Debe ingresar el id de la tarea a actualizar")
+    .bail()
+    .isInt()
+    .withMessage("El id debe de ser tipo entero")
+    .bail()
+    .custom(async (id) => {
+      const tareaBuscada = await TaskModel.findByPk(id);
+
+      if (!tareaBuscada) {
+        throw new Error("No existe esa tarea");
+      }
+      return true;
+    }),
+
+  body("title")
+    .optional()
+    .isString()
+    .withMessage("El titulo debe de ser tipo string")
+    .trim()
+    .notEmpty()
+    .withMessage("El titulo no debe estar vacio")
+    .isLength({ max: 100 })
+    .withMessage("El titulo no debe tener mas de 100 caracteres")
+    .custom(async (title, { req }) => {
+      const tituloBuscado = await TaskModel.findOne({ where: { title } });
+      if (tituloBuscado && tituloBuscado.id !== Number(req.params.id)) {
+        throw new Error("El titulo ya existe");
+      }
+      return true;
+    }),
+
+  body("description")
+    .optional()
+    .isString()
+    .withMessage("La descripcion debe de ser tipo string")
+    .trim()
+    .notEmpty()
+    .withMessage("La descripcion no debe de estar vacia")
+    .isLength({ max: 100 })
+    .withMessage("La descripcion no debe superar los 100 caracteres"),
+
+  body("isComplete")
+    .optional()
     .withMessage("Completada es obligatoria")
     .isBoolean()
     .withMessage("Completada debe de ser tipo booleano (TRUE o FALSE)"),

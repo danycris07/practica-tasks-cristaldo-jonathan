@@ -1,6 +1,7 @@
 import { TaskModel } from "../models/task.model.js";
 import { UserModel } from "../models/user.model.js";
 import { TagModel } from "../models/tag.model.js";
+
 export const obtenerTodasLasTareas = async (req, res) => {
   try {
     const tareasObtenidas = await TaskModel.findAll({
