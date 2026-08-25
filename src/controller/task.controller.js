@@ -67,7 +67,7 @@ export const eliminarTarea = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await tareaEncontrada.destroy({ where: { id } });
+    await TaskModel.destroy({ where: { id } });
 
     return res.status(200).json({ message: "Tarea eliminada correctamente" });
   } catch (error) {
