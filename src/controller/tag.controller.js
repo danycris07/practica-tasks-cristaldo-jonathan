@@ -68,7 +68,6 @@ export const eliminarTag = async (req, res) => {
   try {
     const { id } = req.params;
     const tagEncontrado = await TagModel.findByPk(id);
-
     await tagEncontrado.destroy();
     return res.status(200).json({ message: "Tag eliminado correctamente" });
   } catch (error) {
