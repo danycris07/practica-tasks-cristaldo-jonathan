@@ -82,7 +82,8 @@ export const updateTaskValidation = [
     .bail()
     .custom(async (title, { req }) => {
       const tituloBuscado = await TaskModel.findOne({ where: { title } });
-      if (tituloBuscado && tituloBuscado.id !== Number(req.params.id)) {
+      const idTarea = Number(req.params.id);
+      if (tituloBuscado && tituloBuscado.id !== idTarea) {
         throw new Error("El titulo ya existe");
       }
       return true;
