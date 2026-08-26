@@ -1,6 +1,21 @@
 import { body, param } from "express-validator";
 import { TagModel } from "../../src/models/tag.model.js";
 
+export const getTagByIdValidation = [
+  param("id")
+    .isInt()
+    .withMessage("El id debe de ser tipo numerico entero")
+    .bail()
+    .custom(async (id) => {
+      const tagBuscado = await TagModel.findByPk(id);
+
+      if (!tagBuscado) {
+        throw new Error("La etiqueta buscada no existe");
+      }
+      return true;
+    }),
+];
+
 export const createTagValidation = [
   body("name")
     .isString()

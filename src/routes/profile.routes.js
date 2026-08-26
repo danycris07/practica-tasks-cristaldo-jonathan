@@ -11,12 +11,18 @@ import {
   updateProfileValidation,
   createProfileValidation,
   deleteProfileValidation,
+  getProfileByIdValidation,
 } from "../../middlewares/validations/profile.validations.js";
 
 export const ProfileRouter = Router();
 
 ProfileRouter.get("/", obtenerTodosLosPerfiles);
-ProfileRouter.get("/:id", obtenerPerfilPorId);
+ProfileRouter.get(
+  "/:id",
+  getProfileByIdValidation,
+  validate,
+  obtenerPerfilPorId,
+);
 ProfileRouter.post("/", createProfileValidation, validate, crearPerfil);
 ProfileRouter.put("/:id", updateProfileValidation, validate, actualizarPerfil);
 ProfileRouter.delete("/:id", deleteProfileValidation, validate, eliminarPerfil);

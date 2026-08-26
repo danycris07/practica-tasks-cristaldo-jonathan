@@ -30,9 +30,6 @@ export const obtenerTareaPorId = async (req, res) => {
         },
       ],
     });
-    if (!tareaEncontrada) {
-      return res.status(404).json({ message: "La tarea no existe" });
-    }
     return res.status(200).json(tareaEncontrada);
   } catch (error) {
     res.status(500).json({ message: "Error en el servidor" });

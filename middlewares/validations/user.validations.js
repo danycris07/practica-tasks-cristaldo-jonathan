@@ -1,6 +1,21 @@
 import { body, param } from "express-validator";
 import { UserModel } from "../../src/models/user.model.js";
 
+export const getUserByIdValidation = [
+  param("id")
+    .isInt()
+    .withMessage("El id debe de ser tipo numerico entero")
+    .bail()
+    .custom(async (id) => {
+      const usuarioBuscado = await UserModel.findByPk(id);
+
+      if (!usuarioBuscado) {
+        throw new Error("El usuario buscado no existe");
+      }
+      return true;
+    }),
+];
+
 export const createUserValidation = [
   body("name")
     .isString()

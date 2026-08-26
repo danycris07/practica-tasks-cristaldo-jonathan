@@ -30,9 +30,6 @@ export const obtenerTagPorId = async (req, res) => {
         },
       ],
     });
-    if (!tagEncontrado) {
-      return res.status(404).json({ message: "El tag no existe" });
-    }
     return res.status(200).json(tagEncontrado);
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });
@@ -67,8 +64,7 @@ export const actualizarTag = async (req, res) => {
 export const eliminarTag = async (req, res) => {
   try {
     const { id } = req.params;
-    const tagEncontrado = await TagModel.findByPk(id);
-    await tagEncontrado.destroy();
+    await TagModel.destroy({ where: { id } });
     return res.status(200).json({ message: "Tag eliminado correctamente" });
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });

@@ -2,6 +2,21 @@ import { body, param } from "express-validator";
 import { ProfileModel } from "../../src/models/profile.model.js";
 import { UserModel } from "../../src/models/user.model.js";
 
+export const getProfileByIdValidation = [
+  param("id")
+    .isInt()
+    .withMessage("El id debe de ser tipo numerico entero")
+    .bail()
+    .custom(async (id) => {
+      const perfilBuscado = await ProfileModel.findByPk(id);
+
+      if (!perfilBuscado) {
+        throw new Error("El perfil buscado no existe");
+      }
+      return true;
+    }),
+];
+
 export const createProfileValidation = [
   body("userId")
     .notEmpty()

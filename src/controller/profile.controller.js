@@ -28,9 +28,6 @@ export const obtenerPerfilPorId = async (req, res) => {
         },
       ],
     });
-    if (!perfilEncontrado) {
-      return res.status(404).json({ message: "El perfil no existe" });
-    }
     return res.status(200).json(perfilEncontrado);
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });
@@ -66,9 +63,9 @@ export const actualizarPerfil = async (req, res) => {
 export const eliminarPerfil = async (req, res) => {
   try {
     const { id } = req.params;
-    const perfilEncontrado = await ProfileModel.findByPk(id);
 
-    await perfilEncontrado.destroy();
+    await ProfileModel.findByPk(id);
+
     return res.status(200).json({ message: "Perfil eliminado correctamente" });
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });

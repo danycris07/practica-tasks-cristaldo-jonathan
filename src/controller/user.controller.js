@@ -30,9 +30,6 @@ export const obtenerUsuarioPorId = async (req, res) => {
         },
       ],
     });
-    if (!usuarioEncontrado) {
-      return res.status(404).json({ message: "El usuario no existe" });
-    }
     return res.status(200).json(usuarioEncontrado);
   } catch (error) {
     res.status(500).json({ message: "Error en el servidor" });
@@ -66,9 +63,7 @@ export const actualizarUsuario = async (req, res) => {
 export const eliminarUsuario = async (req, res) => {
   try {
     const { id } = req.params;
-    const usuarioEncontrado = await UserModel.findByPk(id);
-
-    await usuarioEncontrado.destroy();
+    await UserModel.destroy({ where: { id } });
 
     return res.status(200).json({ message: "Usuario eliminado correctamente" });
   } catch (error) {

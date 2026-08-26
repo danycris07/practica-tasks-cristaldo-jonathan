@@ -12,11 +12,12 @@ import {
   createTagValidation,
   updateTagValidation,
   deleteTagValidation,
+  getTagByIdValidation,
 } from "../../middlewares/validations/tag.validations.js";
 export const TagRouter = Router();
 
 TagRouter.get("/", obtenerTodosLosTags);
-TagRouter.get("/:id", obtenerTagPorId);
+TagRouter.get("/:id", getTagByIdValidation, validate, obtenerTagPorId);
 TagRouter.post("/", createTagValidation, validate, crearTag);
 TagRouter.put("/:id", updateTagValidation, validate, actualizarTag);
 TagRouter.delete("/:id", deleteTagValidation, validate, eliminarTag);

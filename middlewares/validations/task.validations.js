@@ -3,6 +3,21 @@ import { UserModel } from "../../src/models/user.model.js";
 import { TaskModel } from "../../src/models/task.model.js";
 import { TagModel } from "../../src/models/tag.model.js";
 
+export const getTaskByIdValidation = [
+  param("id")
+    .isInt()
+    .withMessage("El id debe de ser tipo numerico entero")
+    .bail()
+    .custom(async (id) => {
+      const tareaBuscada = await TaskModel.findByPk(id);
+
+      if (!tareaBuscada) {
+        throw new Error("No existe la tarea buscada");
+      }
+      return true;
+    }),
+];
+
 export const createTaskValidation = [
   body("userId")
     .notEmpty()
