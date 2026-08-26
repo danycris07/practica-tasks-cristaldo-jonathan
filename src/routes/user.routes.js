@@ -13,8 +13,8 @@ import {
   updateUserValidation,
   deleteUserValidation,
   getUserByIdValidation,
-} from "../../middlewares/validations/user.validations.js";
-import { validate } from "../../middlewares/validate.js";
+} from "../middlewares/validations/user.validations.js";
+import { validate } from "../middlewares/validate.js";
 
 export const UserRouter = Router();
 

@@ -7,13 +7,13 @@ import {
   eliminarTag,
 } from "../controller/tag.controller.js";
 
-import { validate } from "../../middlewares/validate.js";
+import { validate } from "../middlewares/validate.js";
 import {
   createTagValidation,
   updateTagValidation,
   deleteTagValidation,
   getTagByIdValidation,
-} from "../../middlewares/validations/tag.validations.js";
+} from "../middlewares/validations/tag.validations.js";
 export const TagRouter = Router();
 
 TagRouter.get("/", obtenerTodosLosTags);

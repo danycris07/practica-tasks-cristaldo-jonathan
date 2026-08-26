@@ -15,8 +15,8 @@ import {
   updateTaskValidation,
   deleteTaskValidation,
   asignTagTask,
-} from "../../middlewares/validations/task.validations.js";
-import { validate } from "../../middlewares/validate.js";
+} from "../middlewares/validations/task.validations.js";
+import { validate } from "../middlewares/validate.js";
 
 export const TaskRouter = Router();
 

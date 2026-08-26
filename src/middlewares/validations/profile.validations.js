@@ -1,6 +1,6 @@
 import { body, param } from "express-validator";
-import { ProfileModel } from "../../src/models/profile.model.js";
-import { UserModel } from "../../src/models/user.model.js";
+import { ProfileModel } from "../../models/profile.model.js";
+import { UserModel } from "../../models/user.model.js";
 
 export const getProfileByIdValidation = [
   param("id")

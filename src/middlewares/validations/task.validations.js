@@ -1,7 +1,7 @@
 import { body, param } from "express-validator";
-import { UserModel } from "../../src/models/user.model.js";
-import { TaskModel } from "../../src/models/task.model.js";
-import { TagModel } from "../../src/models/tag.model.js";
+import { UserModel } from "../../models/user.model.js";
+import { TaskModel } from "../../models/task.model.js";
+import { TagModel } from "../../models/tag.model.js";
 
 export const getTaskByIdValidation = [
   param("id")

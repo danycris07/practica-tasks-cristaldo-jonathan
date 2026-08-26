@@ -6,13 +6,13 @@ import {
   actualizarPerfil,
   eliminarPerfil,
 } from "../controller/profile.controller.js";
-import { validate } from "../../middlewares/validate.js";
+import { validate } from "../middlewares/validate.js";
 import {
   updateProfileValidation,
   createProfileValidation,
   deleteProfileValidation,
   getProfileByIdValidation,
-} from "../../middlewares/validations/profile.validations.js";
+} from "../middlewares/validations/profile.validations.js";
 
 export const ProfileRouter = Router();
 
