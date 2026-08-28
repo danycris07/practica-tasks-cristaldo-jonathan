@@ -1,3 +1,4 @@
+import { matchedData } from "express-validator";
 import { TagModel } from "../models/tag.model.js";
 import { TaskModel } from "../models/task.model.js";
 
@@ -20,7 +21,7 @@ export const obtenerTodosLosTags = async (req, res) => {
 
 export const obtenerTagPorId = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = matchedData(req);
     const tagEncontrado = await TagModel.findByPk(id, {
       include: [
         {
@@ -38,9 +39,9 @@ export const obtenerTagPorId = async (req, res) => {
 
 export const crearTag = async (req, res) => {
   try {
-    const { name } = req.body;
+    const dataLimpia = matchedData(req);
 
-    await TagModel.create({ name });
+    await TagModel.create(dataLimpia);
     return res.status(201).json({ message: "Tag creado con exito" });
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });
@@ -49,12 +50,11 @@ export const crearTag = async (req, res) => {
 
 export const actualizarTag = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name } = req.body;
+    const { id, ...dataLimpia } = matchedData(req);
 
     const tagBuscado = await TagModel.findByPk(id);
 
-    await tagBuscado.update({ name });
+    await tagBuscado.update(dataLimpia);
     return res.status(200).json({ message: "Tag actualizado correctamente" });
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });
@@ -63,7 +63,7 @@ export const actualizarTag = async (req, res) => {
 
 export const eliminarTag = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = matchedData(req);
     await TagModel.destroy({ where: { id } });
     return res.status(200).json({ message: "Tag eliminado correctamente" });
   } catch (error) {

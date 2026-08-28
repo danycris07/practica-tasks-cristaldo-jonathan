@@ -57,6 +57,7 @@ export const updateTagValidation = [
     }),
 
   body("name")
+    .optional()
     .isString()
     .withMessage("El nombre debe ser de tipo string")
     .bail()

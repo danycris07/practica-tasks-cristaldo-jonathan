@@ -68,9 +68,6 @@ export const updateUserValidation = [
     .isInt()
     .withMessage("El id debe de ser tipo numerico entero")
     .bail()
-    .notEmpty()
-    .withMessage("El campo id no debe estar vacio")
-    .bail()
     .custom(async (id) => {
       const usuarioEncontrado = await UserModel.findByPk(id);
 
@@ -81,6 +78,7 @@ export const updateUserValidation = [
     }),
 
   body("name")
+    .optional()
     .isString()
     .withMessage("El nombre debe de ser tipo string")
     .bail()
@@ -92,6 +90,7 @@ export const updateUserValidation = [
     .withMessage("El nombre no debe superar los 100 caracteres"),
 
   body("email")
+    .optional()
     .isString()
     .withMessage("El email debe de ser tipo string")
     .bail()
@@ -116,6 +115,7 @@ export const updateUserValidation = [
     }),
 
   body("password")
+    .optional()
     .isString()
     .withMessage("La contraseña debe ser de tipo string")
     .bail()
