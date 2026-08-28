@@ -1,7 +1,7 @@
 import { TaskModel } from "../models/task.model.js";
 import { UserModel } from "../models/user.model.js";
 import { TagModel } from "../models/tag.model.js";
-import { where } from "sequelize";
+import { matchedData } from "express-validator";
 
 export const obtenerTodasLasTareas = async (req, res) => {
   try {
@@ -21,7 +21,7 @@ export const obtenerTodasLasTareas = async (req, res) => {
 
 export const obtenerTareaPorId = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = matchedData(req);
     const tareaEncontrada = await TaskModel.findByPk(id, {
       include: [
         {
@@ -38,9 +38,9 @@ export const obtenerTareaPorId = async (req, res) => {
 
 export const crearTarea = async (req, res) => {
   try {
-    const { title, description, isComplete, userId } = req.body;
+    const dataLimpia = matchedData(req);
 
-    await TaskModel.create({ title, description, isComplete, userId });
+    await TaskModel.create(dataLimpia);
     return res.status(201).json({ message: "Tarea creada con exito" });
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });
@@ -49,11 +49,10 @@ export const crearTarea = async (req, res) => {
 
 export const actualizarTarea = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { title, description, isComplete } = req.body;
+    const { id, ...dataLimpia } = matchedData(req);
 
     const tareaBuscada = await TaskModel.findByPk(id);
-    await tareaBuscada.update({ title, description, isComplete });
+    await tareaBuscada.update(dataLimpia);
     return res.status(200).json({ message: "Tarea actualizada correctamente" });
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });
@@ -62,7 +61,7 @@ export const actualizarTarea = async (req, res) => {
 
 export const eliminarTarea = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = matchedData(req);
 
     await TaskModel.destroy({ where: { id } });
 
@@ -74,7 +73,7 @@ export const eliminarTarea = async (req, res) => {
 
 export const asignarTagATarea = async (req, res) => {
   try {
-    const { taskId, tagId } = req.body;
+    const { taskId, tagId } = matchedData(req);
 
     const tarea = await TaskModel.findByPk(taskId);
     const tag = await TagModel.findByPk(tagId);

@@ -62,8 +62,7 @@ export const createTaskValidation = [
     .withMessage("La descripcion no debe de tener mas de 100 caracteres"),
 
   body("isComplete")
-    .exists()
-    .withMessage("Completada es obligatoria")
+    .optional()
     .isBoolean()
     .withMessage("Completada debe de ser tipo booleano (TRUE o FALSE)"),
 ];
