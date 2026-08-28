@@ -1,5 +1,6 @@
 import { UserModel } from "../models/user.model.js";
 import { TaskModel } from "../models/task.model.js";
+import { matchedData } from "express-validator";
 
 export const obtenerTodosLosUsuarios = async (req, res) => {
   try {
@@ -20,7 +21,7 @@ export const obtenerTodosLosUsuarios = async (req, res) => {
 
 export const obtenerUsuarioPorId = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = matchedData(req);
     const usuarioEncontrado = await UserModel.findByPk(id, {
       attributes: { exclude: ["password"] },
       include: [
@@ -38,9 +39,9 @@ export const obtenerUsuarioPorId = async (req, res) => {
 
 export const crearUsuario = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const dataLimpia = matchedData(req);
 
-    await UserModel.create({ name, email, password });
+    await UserModel.create(dataLimpia);
     return res.status(201).json({ message: "Usuario creado correctamente" });
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });
@@ -49,11 +50,10 @@ export const crearUsuario = async (req, res) => {
 
 export const actualizarUsuario = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, email, password } = req.body;
+    const { id, ...dataLimpia } = matchedData(req);
     const usuarioBuscado = await UserModel.findByPk(id);
 
-    await usuarioBuscado.update({ name, email, password });
+    await usuarioBuscado.update(dataLimpia);
     return res.status(200).json({ message: "Usuario actualizado con exito" });
   } catch (error) {
     return res.status(500).json({ message: "Error en el servidor" });
@@ -62,7 +62,7 @@ export const actualizarUsuario = async (req, res) => {
 
 export const eliminarUsuario = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = matchedData(req);
     await UserModel.destroy({ where: { id } });
 
     return res.status(200).json({ message: "Usuario eliminado correctamente" });

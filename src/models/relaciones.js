@@ -15,8 +15,12 @@ TaskModel.belongsToMany(TagModel, {
   foreignKey: "taskId",
   onDelete: "CASCADE",
 });
-TagModel.belongsToMany(TaskModel, {
-  through: "TaskTags",
-  foreignKey: "tagId",
-  onDelete: "CASCADE",
-});
+TagModel.belongsToMany(
+  TaskModel,
+  {
+    through: "TaskTags",
+    foreignKey: "tagId",
+    onDelete: "CASCADE",
+  },
+  { paranoid: true },
+);
